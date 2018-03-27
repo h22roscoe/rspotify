@@ -68,6 +68,20 @@ module RSpotify
       end
     end
 
+    ['playlists', 'saved_tracks', 'saved_albums'].each do |method|
+      define_method("all_#{method}") do
+        all = []
+        offset = 0
+        new_added = []
+        begin
+          new_added = self.send("#{method}", {:limit => 50, :offset => offset})
+          all += new_added
+          offset += 50
+        end while not new_added.empty?
+        return all
+      end
+    end
+
     def initialize(options = {})
       credentials = options['credentials']
       extra       = options['extra'].to_h

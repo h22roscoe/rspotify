@@ -171,6 +171,18 @@ describe RSpotify::Playlist do
     end
   end
 
+  describe 'Playlist#all_tracks' do
+    use_vcr_cassette 'playlist:tracks:118430647:starred'
+
+    before { @tracks = starred_playlist.all_tracks }
+
+    it 'should fetch all of the tracks correctly' do
+      expect(@tracks)           .to be_an Array
+      expect(@tracks.size)      .to eq 185
+      expect(@tracks.last.name) .to eq 'On The Streets - Kollectiv Turmstrasse Let Freedom Ring Remix'
+    end
+  end
+
   describe 'Playlist#complete!' do
     let(:href) { 'https://api.spotify.com/v1/users/wizzler/playlists/00wHcTN0zQiun4xri9pmvX' }
     let(:playlist) do

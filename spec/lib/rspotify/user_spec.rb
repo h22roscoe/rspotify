@@ -32,5 +32,22 @@ describe RSpotify::User do
       expect(playlists.first)       .to be_an RSpotify::Playlist
       expect(playlists.map(&:name)) .to include('Movie Soundtrack Masterpieces', 'Blue Mountain State', 'Video Game Masterpieces')
     end
+
+    it 'should respond to all_playlists and return all the correct ones' do
+      client_id     = '5ac1cda2ad354aeaa1ad2693d33bb98c'
+      client_secret = '155fc038a85840679b55a1822ef36b9b'
+      authenticate_client
+
+      expect(@user).to respond_to(:all_playlists)
+
+      playlists = VCR.use_cassette('user:wizzler:playlists:limit:50:offset:0') do
+        @user.all_playlists
+      end
+
+      expect(playlists)             .to be_an Array
+      expect(playlists.size)        .to eq 6
+      expect(playlists.first)       .to be_an RSpotify::Playlist
+      expect(playlists.map(&:name)) .to include('Movie Soundtrack Masterpieces', 'Blue Mountain State', 'Video Game Masterpieces')
+    end
   end
 end
