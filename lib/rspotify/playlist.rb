@@ -224,6 +224,27 @@ module RSpotify
       end
     end
 
+    # Returns array of all of the tracks from the playlist
+    #
+    # @param market [String] Optional. An {https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 ISO 3166-1 alpha-2 country code}. Provide this parameter if you want to apply Track Relinking
+    # @return [Array<Track>]
+    #
+    # @example
+    #           playlist = RSpotify::Playlist.find('wizzler', '00wHcTN0zQiun4xri9pmvX')
+    #           playlist.all_tracks.first.name #=> "Main Theme from Star Wars - Instrumental"
+    def all_tracks(market: nil)
+      all = []
+      offset = 0
+      new_added = []
+      begin
+        new_added = self.tracks(limit: 100, offset: offset, market: market)
+        all += new_added
+        offset += 100
+      end while new_added.size == 100
+
+      return all
+    end
+
     # Returns array of tracks from the playlist
     #
     # @param limit  [Integer] Maximum number of tracks to return. Maximum: 100. Default: 100.
